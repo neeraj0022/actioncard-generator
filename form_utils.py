@@ -145,12 +145,7 @@ def render_card_form(card: dict) -> dict:
         card["description"] = st.text_area("Description", value=card.get("description", ""))
         card["enabled"] = st.checkbox("Enabled (Visible to customers)", value=card.get("enabled", True))
 
-        st.subheader("Sections")
-        sections = card["sections"]
-        sections["location"] = st.text_input("Section Location", value=sections.get("location", ""))
-        sections["channel"] = st.multiselect("Section Channel", ["App", "Web", "Store", "IVR"], default=sections.get("channel", []))
-        sections["section"] = st.text_input("Section Name", value=sections.get("section", ""))
-        card["sections"] = sections
+
 
         st.subheader("Metadata")
         metadata = card["metadata"]
@@ -189,6 +184,12 @@ def render_card_form(card: dict) -> dict:
             "Intent Tags": card["intentTags"],
             "Business Label Tags": card["businessLabelTags"],
         }
+        
+        st.subheader("Sections")
+        sections = card["sections"]
+        sections["location"] = st.text_input("Section Location", value=sections.get("location", ""))
+        sections["channel"] = st.multiselect("Section Channel", ["App", "Web", "Store", "IVR"], default=sections.get("channel", ["App", "Web"]))
+        card["sections"] = sections
 
 
 
