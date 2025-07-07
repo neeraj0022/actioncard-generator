@@ -4,7 +4,7 @@ from llm_utils import convert_row_to_json
 from form_utils import render_card_form
 
 
-st.set_page_config(page_title="🤖 Action Card Generator")
+st.set_page_config(page_title="🤖 Action Card Generator", layout="wide")
 st.title("🤖 Action Card Generator")
 
 uploaded_file = st.file_uploader("📤 Upload Excel (.xls, .xlsx)", type=["xls", "xlsx"])
