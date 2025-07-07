@@ -1,8 +1,7 @@
 import json
-from google import genai
 import google.generativeai as genai
-
 import re
+
 
 # Your Gemini API key
 API_KEY = "AIzaSyCiCNq3Am7C_Wa4P12PGRkET8R2IG7-rpA"
