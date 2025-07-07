@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from llm_utils import convert_row_to_json
+from .llm_utils import convert_row_to_json
 from form_utils import render_card_form
 
 
