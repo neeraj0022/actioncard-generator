@@ -149,16 +149,34 @@ def render_card_form(card: dict) -> dict:
 
         st.subheader("Metadata")
         metadata = card["metadata"]
+
         metadata["manufacturer"] = st.text_input("Manufacturer", value=metadata.get("manufacturer", ""))
         metadata["location"] = st.text_input("Location", value=metadata.get("location", ""))
         metadata["productType"] = st.text_input("Product Type", value=metadata.get("productType", ""))
         metadata["activeState"] = st.text_input("Active State", value=metadata.get("activeState", ""))
+
+        # Define allowed options
+        all_channels = ["App", "Web", "Store", "IVR"]
+        current_channels = metadata.get("channel", [])
+
+        # Validate and filter default values
+        valid_channels = [ch for ch in current_channels if ch in all_channels]
+        invalid_channels = [ch for ch in current_channels if ch not in all_channels]
+
+        # Display multiselect
         metadata["channel"] = st.multiselect(
             "Channels",
-            options=["App", "Web", "Store", "IVR"],
-            default=metadata.get("channel", []),
+            options=all_channels,
+            default=valid_channels,
         )
+
+        # Optional warning for any invalid/default values
+        if invalid_channels:
+            st.warning(f"Ignored invalid channels: {', '.join(invalid_channels)}")
+
+        # Update card metadata
         card["metadata"] = metadata
+
 
         st.subheader("Tags")
         tags = card.setdefault("tags", {})
