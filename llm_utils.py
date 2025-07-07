@@ -1,13 +1,9 @@
 import json
-from google import genai
-import google.generativeai as genai
-
+import requests
 import re
 
 # Your Gemini API key
 API_KEY = "AIzaSyCiCNq3Am7C_Wa4P12PGRkET8R2IG7-rpA"
-
-genai.configure(api_key=API_KEY)
 
 
 def extract_json(text: str) -> str:
@@ -15,6 +11,7 @@ def extract_json(text: str) -> str:
     if match:
         return match.group(1)
     return text.strip()
+
 
 
 def parse_rule_string(rule_str: str) -> dict | None:
@@ -56,6 +53,52 @@ def parse_rule_string(rule_str: str) -> dict | None:
     return None  # unrecognized string
 
 
+# Function to call Gemini API
+def get_gemini_response(prompt_text):
+    """
+    Call the Gemini API with the given prompt text and return the text response.
+
+    Args:
+        prompt_text (str): The text prompt for the API.
+
+    Returns:
+        str: The text response from the API.
+    """
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={API_KEY}"
+
+    
+    prompt_text = prompt_text.strip()
+    
+    payload = {
+        "contents": [
+            {
+                "parts": [
+                    {
+                        "text": prompt_text
+                    }
+                ]
+            }
+        ]
+    }
+    headers = {
+        "Content-Type": "application/json"
+    }
+
+    response = requests.post(url, headers=headers, data=json.dumps(payload))
+    
+
+    if response.status_code == 200:
+        result = response.json()
+        try:
+            # Extracting the text response
+            text_response = result["candidates"][0]["content"]["parts"][0]["text"]
+            return text_response.strip()
+        except (KeyError, IndexError):
+            return "Error: Unexpected response format."
+    else:
+        return f"Error: {response.status_code}, {response.text}"
+
+
 def convert_row_to_json(row: dict) -> dict:
     """
     Convert a single Excel row (as dict) to a structured JSON object using Gemini.
@@ -84,7 +127,7 @@ def convert_row_to_json(row: dict) -> dict:
       ],
       "description": "",
       "tags": {{
-        "Product Tags": [],
+        "Product Tags": [],               
         "Life Stage Tags": [],
         "Intent Tags": [],
         "Business Label Tags": []
@@ -102,23 +145,24 @@ def convert_row_to_json(row: dict) -> dict:
       "notes": ""
     }}
 
+    Points to consider for Tags section:
+    Use the following tagging structure to classify and guide the system on how to handle an Action: Product Tags indicate the product category the Action relates to (e.g., Broadband Base Package, TV AddOn, Sport Base Package); Lifestage Tags describe the target customer segment based on their relationship with the business (e.g., XSell, Acquisition, ERCW); Intent Tags define the purpose or goal of the Action (e.g., Sell, Inform, Prompt); and Business Label Tags categorize the Action for internal business reporting (e.g., U&R Home, XSELL PAYM - Deepsell, Benefit Reinforcement, Proactive Service).
+    
     Instructions:
     - Analyze the input data and populate the JSON accordingly.
     - Use your best judgment to infer tag values based on product name, description, and eligibility.
     - Output only valid JSON with no extra commentary or explanation.
+    
+    
+    
     """
 
-    client = genai.Client(api_key=API_KEY)
-
     try:
-        response = client.models.generate_content(
-            model="gemini-2.0-flash",
-            contents=prompt,
-        )
+        response = get_gemini_response(prompt)
         print("✅ Gemini call done")
 
         # Safely parse JSON response
-        response_text = response.text.strip()
+        response_text = response
         cleaned_json = extract_json(response_text)
         result = json.loads(cleaned_json)
 
