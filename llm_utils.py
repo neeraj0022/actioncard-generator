@@ -1,14 +1,13 @@
-import requests
-import os
 import json
-import pandas as pd
-from time import sleep
-from pathlib import Path
 from google import genai
+import google.generativeai as genai
+
 import re
 
 # Your Gemini API key
 API_KEY = "AIzaSyCiCNq3Am7C_Wa4P12PGRkET8R2IG7-rpA"
+
+genai.configure(api_key=API_KEY)
 
 
 def extract_json(text: str) -> str:
