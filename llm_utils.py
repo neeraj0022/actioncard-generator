@@ -8,6 +8,8 @@ API_KEY = "AIzaSyCiCNq3Am7C_Wa4P12PGRkET8R2IG7-rpA"
 
 genai.configure(api_key=API_KEY)
 
+client = genai.Client(api_key=API_KEY)
+
 
 def extract_json(text: str) -> str:
     match = re.search(r"```(?:json)?\s*(\{.*?\})\s*```", text, re.DOTALL)
@@ -110,10 +112,8 @@ def convert_row_to_json(row: dict) -> dict:
     client = genai.Client(api_key=API_KEY)
 
     try:
-        response = client.models.generate_content(
-            model="gemini-2.0-flash",
-            contents=prompt,
-        )
+        model = genai.GenerativeModel("gemini-2.0-flash")
+        response = model.generate_content(prompt)
         print("✅ Gemini call done")
 
         # Safely parse JSON response
