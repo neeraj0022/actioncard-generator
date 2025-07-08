@@ -147,6 +147,12 @@ def convert_row_to_json(row: dict) -> dict:
 
     Points to consider for Tags section:
     Use the following tagging structure to classify and guide the system on how to handle an Action: Product Tags indicate the product category the Action relates to (e.g., Broadband Base Package, TV AddOn, Sport Base Package); Lifestage Tags describe the target customer segment based on their relationship with the business (e.g., XSell, Acquisition, ERCW); Intent Tags define the purpose or goal of the Action (e.g., Sell, Inform, Prompt); and Business Label Tags categorize the Action for internal business reporting (e.g., U&R Home, XSELL PAYM - Deepsell, Benefit Reinforcement, Proactive Service).
+
+    These are the following sample tags, use these tags>:
+        allowed_product = ["Broadband Base Package", "TV AddOn", "Sport Base Package", "Handset", "Flex Pay", "Samsung", "Android", "Apple"]
+        allowed_life = ["XSell", "Acquisition", "ERCW", "Upgrade", "Existing Customer"]
+        allowed_intent = ["Sell", "Inform", "Prompt", "Purchase", "Upgrtade", "Pre-order", "Order"]
+        allowed_business = ["U&R Home", "XSELL PAYM - Deepsell", "Benefit Reinforcement", "Proactive Service", "Upgrade", "Flex Pay"," New Device", "Flagship" ]
     
     Instructions:
     - Analyze the input data and populate the JSON accordingly.
